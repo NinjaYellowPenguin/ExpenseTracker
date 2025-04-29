@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -13,12 +14,14 @@ public abstract class PenguinJsonDao <T>{
 
 	private JsonManager jsonManager;
 	private Set<T> items;
+	private JavaType type;
 	//Need Jackson yet
 	private ObjectMapper mapper;
 
-	public PenguinJsonDao(String path) {		
+	public PenguinJsonDao(String path, Class<T> clazz) {		
 		this.mapper = new ObjectMapper();
 		this.mapper.registerModule(new JavaTimeModule());
+		this.type = mapper.getTypeFactory().constructCollectionType(Set.class, clazz);
 		jsonManager = new JsonManager(path);
 		refresh();		
 	}
@@ -73,8 +76,7 @@ public abstract class PenguinJsonDao <T>{
 
 	private Set<T> parseExpenses(String json) {
 		try {
-			return mapper.readValue(json, new TypeReference<Set<T>>() {
-			});
+			return mapper.readValue(json, type);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return Set.of();

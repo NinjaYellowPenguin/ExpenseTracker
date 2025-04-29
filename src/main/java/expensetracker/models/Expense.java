@@ -3,8 +3,12 @@ package expensetracker.models;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Expense {
+import glaciar.anotacionespinguino.PenguinAttribute;
+import glaciar.anotacionespinguino.PenguinEntity;
 
+@PenguinEntity
+public class Expense {
+	@PenguinAttribute(penguinKey = true)
 	private String uuid;
 	private String description;
 	private int amountCts; // Amount in cts to avoid floats.
@@ -49,6 +53,18 @@ public class Expense {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder msg = new StringBuilder("\n");
+		msg.append("uuid").append(getUuid()).append("->\n");
+		msg.append("	description").append(getDescription()).append("\n");
+		msg.append("	amountCts").append(getAmountCts()).append("\n");
+		msg.append("	category").append(getCategory()).append("\n");
+		msg.append("	createdAt").append(getCreatedAt()).append("\n");
+		
+		return super.toString();
 	}
 
 	@Override
